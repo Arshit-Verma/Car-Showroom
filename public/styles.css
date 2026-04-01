@@ -38,8 +38,6 @@ nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1400px;
-    margin: 0 auto;
     padding: 1.2rem 2rem;
 }
 
@@ -94,10 +92,14 @@ nav {
 .hero {
     background: linear-gradient(135deg, var(--black) 0%, #2D2D2D 50%, var(--black) 100%);
     color: var(--white);
-    padding: 8rem 2rem 6rem;
+    min-height: 100vh;
+    padding: 2rem;
     text-align: center;
     position: relative;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .hero::before {
@@ -161,8 +163,6 @@ nav {
 /* Section Styles */
 section {
     padding: 5rem 2rem;
-    max-width: 1400px;
-    margin: 0 auto;
 }
 
 .section-header {
@@ -715,8 +715,6 @@ footer {
 }
 
 .footer-content {
-    max-width: 1400px;
-    margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 3rem;
@@ -775,6 +773,11 @@ footer {
         gap: 1rem;
     }
 
+    .hero {
+        min-height: calc(100vh - 72px);
+        padding: 2rem 1rem;
+    }
+
     .hero h1 {
         font-size: 2.5rem;
     }
@@ -797,5 +800,207 @@ footer {
 
     .footer-content {
         grid-template-columns: 1fr;
+    }
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: white;
+    margin: 2% auto;
+    padding: 0;
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 15px;
+    position: relative;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 35px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    z-index: 1;
+    background: rgba(0,0,0,0.5);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    background: rgba(0,0,0,0.8);
+}
+
+.modal-car-details {
+    padding: 2rem;
+}
+
+.modal-car-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+}
+
+.modal-car-details h2 {
+    font-size: 2.5rem;
+    color: var(--black);
+    margin-bottom: 0.5rem;
+}
+
+.modal-car-price {
+    font-size: 2rem;
+    color: var(--orange);
+    font-weight: 700;
+    margin-bottom: 2rem;
+}
+
+.modal-specs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--light-gray);
+    border-radius: 10px;
+}
+
+.modal-spec {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-spec strong {
+    color: var(--gray);
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+}
+
+.modal-spec span {
+    color: var(--black);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.modal-description, .modal-features {
+    margin-bottom: 2rem;
+}
+
+.modal-description h3, .modal-features h3 {
+    font-size: 1.5rem;
+    color: var(--black);
+    margin-bottom: 1rem;
+}
+
+.modal-description p {
+    color: var(--gray);
+    line-height: 1.8;
+    font-size: 1.05rem;
+}
+
+.modal-features ul {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.8rem;
+}
+
+.modal-features li {
+    padding: 0.8rem;
+    background: var(--light-yellow);
+    border-radius: 8px;
+    color: var(--black);
+    font-weight: 500;
+}
+
+.modal-features li:before {
+    content: "✓ ";
+    color: var(--primary-yellow);
+    font-weight: bold;
+    margin-right: 0.5rem;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.contact-dealer-btn, .book-test-drive-btn {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contact-dealer-btn {
+    background: var(--primary-yellow);
+    color: var(--black);
+}
+
+.book-test-drive-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.contact-dealer-btn:hover, .book-test-drive-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        margin: 5% auto;
+    }
+
+    .modal-car-image {
+        height: 250px;
+    }
+
+    .modal-actions {
+        flex-direction: column;
     }
 }

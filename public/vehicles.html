@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Vehicles - Argar Wheels</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        .vehicles-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 100px 2rem 4rem;
+        }
+
+        .vehicles-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .vehicles-header h1 {
+            font-size: 3rem;
+            color: var(--black);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .vehicles-header p {
+            font-size: 1.2rem;
+            color: var(--gray);
+        }
+
+        #vehicles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .vehicle-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .vehicle-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .vehicle-image-container {
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+        }
+
+        .vehicle-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .vehicle-card:hover .vehicle-image {
+            transform: scale(1.1);
+        }
+
+        .vehicle-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--primary-yellow);
+            color: var(--black);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .vehicle-content {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .vehicle-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--black);
+            margin-bottom: 0.5rem;
+        }
+
+        .vehicle-price {
+            font-size: 1.8rem;
+            color: var(--orange);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .vehicle-specs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .spec-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .show-details-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: auto;
+        }
+
+        .show-details-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            margin: 2% auto;
+            padding: 0;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 15px;
+            position: relative;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 35px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            z-index: 1;
+            background: rgba(0,0,0,0.5);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            background: rgba(0,0,0,0.8);
+        }
+
+        .modal-car-details {
+            padding: 2rem;
+        }
+
+        .modal-car-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .modal-car-details h2 {
+            font-size: 2.5rem;
+            color: var(--black);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-car-price {
+            font-size: 2rem;
+            color: var(--orange);
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+
+        .modal-specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--light-gray);
+            border-radius: 10px;
+        }
+
+        .modal-spec {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-spec strong {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .modal-spec span {
+            color: var(--black);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .modal-description, .modal-features {
+            margin-bottom: 2rem;
+        }
+
+        .modal-description h3, .modal-features h3 {
+            font-size: 1.5rem;
+            color: var(--black);
+            margin-bottom: 1rem;
+        }
+
+        .modal-description p {
+            color: var(--gray);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .modal-features ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.8rem;
+        }
+
+        .modal-features li {
+            padding: 0.8rem;
+            background: var(--light-yellow);
+            border-radius: 8px;
+            color: var(--black);
+            font-weight: 500;
+        }
+
+        .modal-features li:before {
+            content: "✓ ";
+            color: var(--primary-yellow);
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .contact-dealer-btn, .book-test-drive-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .contact-dealer-btn {
+            background: var(--primary-yellow);
+            color: var(--black);
+        }
+
+        .book-test-drive-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .contact-dealer-btn:hover, .book-test-drive-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .no-vehicles, .error-message {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 15px;
+            grid-column: 1 / -1;
+        }
+
+        .error-message button {
+            margin-top: 1rem;
+            padding: 10px 30px;
+            background: var(--primary-yellow);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .vehicles-header h1 {
+                font-size: 2rem;
+            }
+
+            #vehicles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+            }
+
+            .modal-car-image {
+                height: 250px;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <header>
+        <nav>
+            <div class="logo">ARGAR <span>WHEELS</span></div>
+            <ul class="nav-links">
+                <li><a href="/">HOME</a></li>
+                <li><a href="/vehicles.html" class="active">VEHICLES</a></li>
+                <li><a href="/#services">SERVICES</a></li>
+                <li><a href="/#featured">FEATURED</a></li>
+                <li><a href="/#reviews">REVIEWS</a></li>
+                <li><a href="/#contact">CONTACT</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Vehicles Section -->
+    <section class="vehicles-page">
+        <div class="vehicles-header">
+            <h1>Our Complete Vehicle Collection</h1>
+            <p>Browse through our premium selection of quality vehicles</p>
+        </div>
+        
+        <div id="vehicles-grid">
+            <!-- Vehicles will be loaded here dynamically -->
+            <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                <p>Loading vehicles...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: linear-gradient(135deg, var(--black) 0%, #2D2D2D 100%); color: white; padding: 3rem 2rem 1rem;">
+        <div style="max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+            <div>
+                <h3 style="color: var(--primary-yellow); margin-bottom: 1rem;">Our Branches</h3>
+                <p>Mumbai - Main Office</p>
+                <p>Delhi - North Branch</p>
+                <p>Bangalore - South Branch</p>
+                <p>Pune - West Branch</p>
+            </div>
+            <div>
+                <h3 style="color: var(--primary-yellow); margin-bottom: 1rem;">Quick Links</h3>
+                <a href="/" style="display: block; color: white; margin-bottom: 0.5rem; text-decoration: none;">Home</a>
+                <a href="/vehicles.html" style="display: block; color: white; margin-bottom: 0.5rem; text-decoration: none;">Vehicles</a>
+                <a href="/#services" style="display: block; color: white; margin-bottom: 0.5rem; text-decoration: none;">Services</a>
+                <a href="/#contact" style="display: block; color: white; margin-bottom: 0.5rem; text-decoration: none;">Contact</a>
+            </div>
+            <div>
+                <h3 style="color: var(--primary-yellow); margin-bottom: 1rem;">Contact Info</h3>
+                <p>📞 +91 98765 43210</p>
+                <p>📧 info@argarwheels.com</p>
+                <p>📍 Dlf City Phase 2, Gurgaon</p>
+            </div>
+            <div>
+                <h3 style="color: var(--primary-yellow); margin-bottom: 1rem;">Opening Hours</h3>
+                <p>Monday - Friday: 9AM - 8PM</p>
+                <p>Saturday: 9AM - 8PM</p>
+                <p>Sunday: 10AM - 6PM</p>
+            </div>
+        </div>
+        <div style="text-align: center; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+            <p>&copy; 2024 Argar Wheels. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/js/vehicles.js"></script>
+    <script src="/js/chatbot.js"></script>
+</body>
+</html>
